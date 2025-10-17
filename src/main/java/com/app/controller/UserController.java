@@ -31,8 +31,8 @@ public class UserController {
 
 
     @GetMapping("/profile")
-    public UserDto getMyProfile(@AuthenticationPrincipal User currentuser) {
-        return userService.getMyProfile(currentuser);
+    public ResponseEntity<UserDto> getMyProfile(@AuthenticationPrincipal User currentuser) {
+        return ResponseEntity.ok(userService.getMyProfile(currentuser));
 
 
     }
