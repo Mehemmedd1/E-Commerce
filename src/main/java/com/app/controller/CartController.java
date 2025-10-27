@@ -2,13 +2,16 @@ package com.app.controller;
 
 import com.app.dto.CartItemRequest;
 import com.app.model.Cart;
+import com.app.model.Product;
 import com.app.model.User;
 import com.app.service.CartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user/cart")
 @RequiredArgsConstructor
@@ -55,8 +58,8 @@ public class CartController {
 
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clearCart(@AuthenticationPrincipal User user) {
+    public ResponseEntity<String> clearCart(@AuthenticationPrincipal User user) {
         cartService.clearCart(user);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Bütün səbət silindi");
     }
 }
