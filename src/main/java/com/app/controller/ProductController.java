@@ -2,6 +2,7 @@ package com.app.controller;
 
 import com.app.model.Product;
 import com.app.service.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("allProducts")
+    @GetMapping("/allProducts")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
@@ -26,5 +27,11 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product with id "+ id +" was deleted.");
+    }
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createProduct(@RequestBody Product product){
+        Product product1 = productService.createProduct(product);
+        return ResponseEntity.ok("Product with id "+ product1.getId() +" was created.");
     }
 }

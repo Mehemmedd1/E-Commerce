@@ -23,4 +23,9 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
 }
