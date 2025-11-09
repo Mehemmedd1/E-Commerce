@@ -43,5 +43,18 @@ public class ProductServiceImplTest {
         verify(productRepository, times(1)).deleteById(productId);
 
     }
+    @Test
+    public void createProductTest() {
+        Product product=new Product();
+        product.setName("Test Product");
+        product.setDescription("Test description");
+        product.setStock(10);
+        product.setPrice(212.54);
+        when(productRepository.save(product)).thenReturn(product);
+        Product savedProduct=productService.createProduct(product);
+        assertEquals(product,savedProduct);
+        verify(productRepository,times(1)).save(product);
+
+    }
 
 }

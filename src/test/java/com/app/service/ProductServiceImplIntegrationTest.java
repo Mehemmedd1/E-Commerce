@@ -1,6 +1,7 @@
 package com.app.service;
 
 import com.app.model.Product;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,4 +80,15 @@ public class ProductServiceImplIntegrationTest {
 //        assertEquals(savedProduct.getId(), foundProduct.getId());
 //        assertEquals(savedProduct.getName(), foundProduct.getName());
 //    }
+@AfterEach
+void cleanUp() {
+    if (testProduct == null) {
+        return;
+    }
+    final Long productId = testProduct.getId();
+    if (productId != null) {
+        productService.deleteProduct(productId);
+    }
+}
+
 }
