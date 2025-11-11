@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,5 +43,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getMyProfile( User currentuser) {
         return convertToDto(currentuser);
+    }
+
+    @Override
+    public String updateProfile(User currentUser,UserDto userDto) {
+        Optional<User> userByEmail = userRepository.findByEmail(userDto.getEmail());
+        if (userByEmail.isPresent() && !userByEmail.get().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("Bu email artıq istifadə olunur!");
+        }
+        if (userDto.getName() != null){
+            currentUser.setName(userDto.getName());
+        }
+        if (userDto.getEmail()!=null){
+            currentUser.setEmail(userDto.getEmail());
+        }
+
+        userRepository.save(currentUser);
+        return "Profile with id: "+currentUser.getId()+" updated successfully" ;
     }
 }
