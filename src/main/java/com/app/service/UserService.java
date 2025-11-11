@@ -9,4 +9,6 @@ import java.util.List;
 public interface UserService {
    List<UserDto> findAll();
    UserDto getMyProfile( User currentuser);
+   String updateProfile(User currentUser, UserDto userDto);
+
 }

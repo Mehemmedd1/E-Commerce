@@ -56,7 +56,7 @@ public class AuthService {
 
 
 
-        return "Qeydiyyat uğurludur zəhmət olmasa e poçta göndərilən kodu təstiqləyin";
+        return "Qeydiyyat uğurludur zəhmət olmasa e-poçta göndərilən kodu təstiqləyin";
 
     }
 

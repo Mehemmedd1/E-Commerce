@@ -9,7 +9,7 @@ import java.util.Random;
 public class OtpService {
     public String generateOtp() {
         Random random=new SecureRandom();
-        int otp= 1000+random.nextInt(9000);
+        int otp= random.nextInt(1000,9999);
         return String.valueOf(otp);
     }
 }
