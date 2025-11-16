@@ -3,6 +3,7 @@
 A secure and scalable E-Commerce Backend API built with Java Spring Boot, supporting user authentication, product management, cart operations, and admin functionalities.
 
 🚀 Features
+
 👤 Authentication & Authorization
 
 User registration & login
