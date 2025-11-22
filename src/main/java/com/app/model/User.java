@@ -7,7 +7,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -38,11 +40,10 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
-@Column(name = "otp_code")
+    @Column(name = "otp_code")
     private String otpCode;
-@Column(name = "otp_expiry_date")
+    @Column(name = "otp_expiry_date")
     private LocalDateTime otpExpiryDate;
-
 
 
     @Override
@@ -51,15 +52,32 @@ public class User implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
     }
+
     @Column(name = "enabled", columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean enabled=false;
+    private boolean enabled = false;
+
     @Override
     public String getUsername() {
         return email;
     }
 
-    @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
-    @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return this.enabled; }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 }
