@@ -1,8 +1,9 @@
 package com.app.config;
 
-import com.app.auth.service.CustomOAuth2UserService;
+import com.app.auth.service.CustomOidcUserService;
 import com.app.auth.service.OAuth2LoginSuccessHandler;
 import com.app.security.jwt.JwtAuthenticationFilter;
+import com.app.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,8 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final CustomOidcUserService customOidcUserService;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**",
                                 "/oauth2/**",
-                                "/login/oauth2/code/google").permitAll()
+                                "/login/oauth2/code/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -53,10 +56,14 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(endpoint -> endpoint
-                                .baseUri("/oauth2/authorization"))
+                                .baseUri("/oauth2/authorize"))
+                        .redirectionEndpoint(endpoint -> endpoint
+                                .baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService))
+                                .userService(customOAuth2UserService)
+                                .oidcUserService(customOidcUserService))  // Add OIDC service
                         .successHandler(oAuth2LoginSuccessHandler));
+
 
 
         return http.build();

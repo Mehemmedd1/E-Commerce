@@ -10,10 +10,10 @@ import com.app.repository.RoleRepository;
 import com.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,24 +21,24 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOidcUserService extends OidcUserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
-
-        return processOAuth2User(userRequest, oAuth2User);
+    public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+        OidcUser oidcUser = super.loadUser(userRequest);
+        
+        return processOidcUser(userRequest, oidcUser);
     }
 
-    private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+    private OidcUser processOidcUser(OidcUserRequest userRequest, OidcUser oidcUser) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 registrationId,
-                oAuth2User.getAttributes()
+                oidcUser.getAttributes()
         );
 
         if (oAuth2UserInfo.getEmail() == null || oAuth2UserInfo.getEmail().isEmpty()) {
@@ -55,8 +55,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = registerNewUser(oAuth2UserInfo);
         }
 
-        // Wrap the User entity in CustomOAuth2User
-        return new CustomOAuth2User(user, oAuth2User.getAttributes());
+        // Return CustomOAuth2User which implements both OAuth2User and OidcUser
+        return new CustomOidcUser(user, oidcUser.getAttributes(), oidcUser.getIdToken(), oidcUser.getUserInfo());
     }
 
     private User registerNewUser(OAuth2UserInfo oAuth2UserInfo) {
@@ -68,7 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setPassword(passwordEncoder.encode("OAUTH2_USER_" + System.currentTimeMillis()));
         user.setRoles(Collections.singleton(userRole));
-        user.setEnabled(true); // OAuth2 users are auto-verified
+        user.setEnabled(true);
 
         return userRepository.save(user);
     }
