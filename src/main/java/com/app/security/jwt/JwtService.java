@@ -18,11 +18,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // application.properties faylından SECRET_KEY-i oxuyur
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
-    // application.properties faylından Tokenin bitmə müddətini oxuyur
     @Value("${jwt.expiration.ms}")
     private long EXPIRATION_MS;
 
