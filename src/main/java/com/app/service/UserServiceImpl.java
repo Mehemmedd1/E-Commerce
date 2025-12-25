@@ -1,6 +1,7 @@
 package com.app.service;
 
 import com.app.dto.UserDto;
+import com.app.model.Orders;
 import com.app.model.User;
 import com.app.repository.UserRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,11 +23,13 @@ public class UserServiceImpl implements UserService {
         Set<String> roles = user.getRoles().stream()
                 .map(role -> role.getName().name())
                 .collect(Collectors.toSet());
+        List<Orders> orders = user.getOrders().stream().toList();
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .roles(roles)
+                .orders(orders)
                 .build();
     }
 
