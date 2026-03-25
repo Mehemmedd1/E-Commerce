@@ -43,8 +43,8 @@ public class User implements UserDetails {
     @Column(name = "otp_expiry_date")
     private LocalDateTime otpExpiryDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-    private List<Orders> orders=new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Orders> orders = new ArrayList<>();
 
 
     @Override

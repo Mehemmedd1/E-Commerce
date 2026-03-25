@@ -43,7 +43,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // Rol məlumatını Token-ə əlavə edin
+
         claims.put("roles", userDetails.getAuthorities().stream().map(Object::toString).toList());
         return buildToken(claims, userDetails);
     }
